@@ -96,15 +96,11 @@ assert(
   /duration:\s*Style\.duration\(root\.animationDuration\)/.test(collapsibleSource),
   'the collapsible honors the shell no-animations mode'
 )
-assert(/animationDuration:\s*600/.test(collapsibleSource), 'the collapsible matches the tray drawer duration')
+assert(/animationDuration:\s*600/.test(collapsibleSource), 'the collapsible matches the tray drawer duration it mirrors')
 
-// The tray drawer and the widget group share BarCollapsible rather than forking
-// the collapse/expand animation. The collapsible offers the tray's reserve-space
-// mode and a chevron-press hook for its manage popup, and the tray drives both
-// through it instead of running its own reveal.
-assert(/property bool reserveSpace/.test(collapsibleSource), 'the collapsible offers a reserve-space (tray) mode')
-assert(/signal chevronPressed/.test(collapsibleSource), 'the collapsible exposes chevron presses for the tray manage popup')
-assert(/BarCollapsible \{[\s\S]*?reserveSpace: true/.test(traySource), 'the tray drawer uses BarCollapsible in reserve-space mode')
-assert(/onChevronPressed:[\s\S]*?managePopupOpen/.test(traySource), 'the tray opens its manage popup from the shared chevron')
-assert(!/Behavior on revealProgress/.test(traySource), 'the tray no longer runs its own forked reveal animation')
+// The collapsible is the group's own container and carries no tray-only modes:
+// the tray keeps its own drawer, which has since grown tray-specific behavior
+// (drop sections, hold-open during a bar drag) this component does not model.
+assert(!/reserveSpace/.test(collapsibleSource), 'the collapsible carries no leftover tray reserve-space mode')
+assert(!/BarCollapsible/.test(traySource), 'the tray keeps its own drawer rather than being refactored here')
 JS
